@@ -7,489 +7,651 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            padding-top: 20px;
-            padding-bottom: 40px;
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+            background-color: #f8f9fa;
         }
-        .result-card {
-            margin-bottom: 15px;
-            border-left: 4px solid #0d6efd;
-        }
-        .evidence-badge {
-            font-size: 0.8rem;
-        }
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .footer {
-            margin-top: 30px;
+        .header {
+            background-color: #0d6efd;
+            color: white;
             padding: 20px 0;
-            border-top: 1px solid #e5e5e5;
-            color: #777;
+            margin-bottom: 30px;
+        }
+        .search-panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .results-panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .result-item {
+            border-bottom: 1px solid #dee2e6;
+            padding: 15px 0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .badge-evidence {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+        }
+        .badge-language {
+            font-size: 0.8rem;
+            padding: 5px 10px;
         }
         .downloaded {
-            background-color: #f8f9fa;
-            border-left: 4px solid #28a745;
+            background-color: #e9f5e9;
         }
-        .downloaded-badge {
-            background-color: #28a745;
-            color: white;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 0.7rem;
-            margin-left: 5px;
+        .btn-download {
+            min-width: 120px;
+        }
+        .society-link {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
         }
         @media (max-width: 768px) {
-            .btn-responsive {
-                width: 100%;
-                margin-bottom: 10px;
+            .search-panel, .results-panel {
+                margin-bottom: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="mb-4">
+    <div class="header">
+        <div class="container">
             <h1 class="text-center">歯科系ガイドライン・論文検索</h1>
-            <p class="text-center text-muted">日本とアメリカの主要な歯科系学会のガイドラインとエビデンスレベルの高い論文を検索</p>
-        </header>
+        </div>
+    </div>
 
+    <div class="container">
         <div class="row">
+            <!-- 検索パネル -->
             <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>検索条件</h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="searchForm">
-                            <div class="mb-3">
-                                <label for="keyword" class="form-label">キーワード</label>
-                                <input type="text" class="form-control" id="keyword" name="keyword" placeholder="例: 歯周病 治療">
-                            </div>
-                            <div class="mb-3">
-                                <label for="field" class="form-label">分野</label>
-                                <select class="form-select" id="field" name="field">
-                                    <option value="">すべての分野</option>
-                                    <option value="接着修復">接着修復</option>
-                                    <option value="保存歯科">保存歯科</option>
-                                    <option value="歯内療法">歯内療法</option>
-                                    <option value="歯周病">歯周病</option>
-                                    <option value="矯正">矯正</option>
-                                    <option value="小児歯科">小児歯科</option>
-                                    <option value="口腔外科">口腔外科</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="document_type" class="form-label">文献タイプ</label>
-                                <select class="form-select" id="document_type" name="document_type">
-                                    <option value="">すべてのタイプ</option>
-                                    <option value="guideline">ガイドライン</option>
-                                    <option value="paper">論文（エビデンスレベルの高いもの）</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="language" class="form-label">言語</label>
-                                <select class="form-select" id="language" name="language">
-                                    <option value="">すべての言語</option>
-                                    <option value="japanese">日本語</option>
-                                    <option value="english">英語</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">検索</button>
-                        </form>
-                    </div>
+                <div class="search-panel">
+                    <h4 class="mb-3">検索条件</h4>
+                    <form id="searchForm">
+                        <div class="mb-3">
+                            <label for="keyword" class="form-label">キーワード</label>
+                            <input type="text" class="form-control" id="keyword" placeholder="キーワードを入力">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="field" class="form-label">分野</label>
+                            <select class="form-select" id="field">
+                                <option value="all">すべての分野</option>
+                                <option value="adhesive">接着修復</option>
+                                <option value="conservative">保存歯科</option>
+                                <option value="endodontics">歯内療法</option>
+                                <option value="periodontics">歯周病</option>
+                                <option value="orthodontics">矯正</option>
+                                <option value="pediatric">小児歯科</option>
+                                <option value="oral-surgery">口腔外科</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="documentType" class="form-label">文献タイプ</label>
+                            <select class="form-select" id="documentType">
+                                <option value="all">すべての文献</option>
+                                <option value="guideline">ガイドライン</option>
+                                <option value="paper">論文（エビデンスレベルの高いもの）</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="language" class="form-label">言語</label>
+                            <select class="form-select" id="language">
+                                <option value="all">すべての言語</option>
+                                <option value="ja">日本語</option>
+                                <option value="en">英語</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="society" class="form-label">学会</label>
+                            <select class="form-select" id="society">
+                                <option value="all">すべての学会</option>
+                                <option value="jea">日本歯内療法学会</option>
+                                <option value="jscd">日本保存歯科学会</option>
+                                <option value="jadr">日本接着歯学会</option>
+                                <option value="jspp">日本歯周病学会</option>
+                                <option value="jos">日本矯正歯科学会</option>
+                                <option value="jspd">日本小児歯科学会</option>
+                                <option value="jsoms">日本口腔外科学会</option>
+                                <option value="ada">アメリカ歯科医師会</option>
+                                <option value="aae">アメリカ歯内療法学会</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">検索</button>
+                    </form>
                 </div>
-
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>日本の主要歯科学会</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <a href="https://www.jads.jp/" target="_blank">日本歯科医学会</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="http://www.hozon.or.jp/" target="_blank">日本歯科保存学会</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.hotetsu.com/" target="_blank">日本補綴歯科学会</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="http://www.jsoms.or.jp/" target="_blank">日本口腔外科学会</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.jos.gr.jp/" target="_blank">日本矯正歯科学会</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="http://www.jspd.or.jp/" target="_blank">日本小児歯科学会</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.perio.jp/" target="_blank">日本歯周病学会</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h5>アメリカの主要歯科学会</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <a href="https://www.ada.org/" target="_blank">American Dental Association (ADA)</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.aae.org/" target="_blank">American Association of Endodontists</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.perio.org/" target="_blank">American Academy of Periodontology</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.aaoinfo.org/" target="_blank">American Association of Orthodontists</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.aapd.org/" target="_blank">American Academy of Pediatric Dentistry</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="https://www.aaoms.org/" target="_blank">American Association of Oral and Maxillofacial Surgeons</a>
-                            </li>
-                        </ul>
-                    </div>
+                
+                <div class="society-link">
+                    <h5>主要学会リンク</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://jea-endo.or.jp/" target="_blank">日本歯内療法学会</a></li>
+                        <li><a href="https://www.hozon.or.jp/" target="_blank">日本保存歯科学会</a></li>
+                        <li><a href="https://www.adhesive-dent.com/" target="_blank">日本接着歯学会</a></li>
+                        <li><a href="https://www.perio.jp/" target="_blank">日本歯周病学会</a></li>
+                        <li><a href="https://www.jos.gr.jp/" target="_blank">日本矯正歯科学会</a></li>
+                        <li><a href="http://www.jspd.or.jp/" target="_blank">日本小児歯科学会</a></li>
+                        <li><a href="https://www.jsoms.or.jp/" target="_blank">日本口腔外科学会</a></li>
+                        <li><a href="https://www.ada.org/" target="_blank">アメリカ歯科医師会</a></li>
+                        <li><a href="https://www.aae.org/" target="_blank">アメリカ歯内療法学会</a></li>
+                    </ul>
                 </div>
             </div>
-
+            
+            <!-- 検索結果パネル -->
             <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">検索結果</h5>
-                        <div>
-                            <button id="downloadAllBtn" class="btn btn-sm btn-success me-2" disabled>一括ダウンロード</button>
-                            <button id="exportBtn" class="btn btn-sm btn-secondary" disabled>CSVエクスポート</button>
-                        </div>
+                <div class="results-panel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>検索結果</h4>
+                        <button id="bulkDownload" class="btn btn-success" style="display: none;">一括ダウンロード</button>
                     </div>
-                    <div class="card-body">
-                        <div id="loading" class="loading">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2">論文を検索中...</p>
-                        </div>
-                        <div id="results">
-                            <p class="text-center text-muted">検索条件を入力して「検索」ボタンをクリックしてください。</p>
-                        </div>
+                    <div id="searchResults">
+                        <p class="text-center text-muted">検索条件を設定して「検索」ボタンをクリックしてください。</p>
                     </div>
                 </div>
             </div>
         </div>
-
-        <footer class="footer text-center">
-            <p>&copy; 2025 歯科系ガイドライン・論文検索アプリ</p>
-        </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchForm = document.getElementById('searchForm');
-            const resultsDiv = document.getElementById('results');
-            const loadingDiv = document.getElementById('loading');
-            const exportBtn = document.getElementById('exportBtn');
-            const downloadAllBtn = document.getElementById('downloadAllBtn');
+        // ダウンロード済みアイテムを保存するローカルストレージキー
+        const DOWNLOADED_ITEMS_KEY = 'downloadedDentalItems';
+        
+        // ダウンロード済みアイテムの取得
+        function getDownloadedItems() {
+            const items = localStorage.getItem(DOWNLOADED_ITEMS_KEY);
+            return items ? JSON.parse(items) : [];
+        }
+        
+        // ダウンロード済みアイテムの保存
+        function saveDownloadedItem(id) {
+            const items = getDownloadedItems();
+            if (!items.includes(id)) {
+                items.push(id);
+                localStorage.setItem(DOWNLOADED_ITEMS_KEY, JSON.stringify(items));
+            }
+        }
+        
+        // アイテムがダウンロード済みかチェック
+        function isItemDownloaded(id) {
+            return getDownloadedItems().includes(id);
+        }
+        
+        // モックデータ - 実際のAPIに置き換えることができます
+        const mockData = [
+            // 日本歯内療法学会のガイドライン
+            {
+                id: 'jea-guideline-2020',
+                title: '歯内療法診療ガイドライン',
+                authors: '日本歯内療法学会',
+                journal: '日本歯内療法学会',
+                date: '2020-06',
+                type: 'guideline',
+                field: 'endodontics',
+                language: 'ja',
+                society: 'jea',
+                url: 'https://jea-endo.or.jp/materials/guidelines.html',
+                pdfUrl: 'https://jea-endo.or.jp/materials/guidelines.html'
+            },
+            {
+                id: 'jea-guideline-2009',
+                title: '歯内療法ガイドライン',
+                authors: '日本歯内療法学会',
+                journal: '日本歯内療法学会',
+                date: '2009',
+                type: 'guideline',
+                field: 'endodontics',
+                language: 'ja',
+                society: 'jea',
+                url: 'https://jea-endo.or.jp/materials/guidelines.html',
+                pdfUrl: 'https://jea-endo.or.jp/materials/guidelines.html'
+            },
+            {
+                id: 'jea-aae-antibiotics',
+                title: '歯内療法における抗生物質の使用に関するAAEガイダンス',
+                authors: 'アメリカ歯内療法学会（日本語訳：日本歯内療法学会）',
+                journal: '日本歯内療法学会',
+                date: '2017',
+                type: 'guideline',
+                field: 'endodontics',
+                language: 'ja',
+                society: 'jea',
+                url: 'https://jea-endo.or.jp/materials/guidelines.html',
+                pdfUrl: 'https://jea-endo.or.jp/materials/guidelines.html'
+            },
+            {
+                id: 'jea-aae-prophylaxis',
+                title: '全身疾患のある患者への抗菌薬予防投与におけるAAEの手引き',
+                authors: 'アメリカ歯内療法学会（日本語訳：日本歯内療法学会）',
+                journal: '日本歯内療法学会',
+                date: '2017',
+                type: 'guideline',
+                field: 'endodontics',
+                language: 'ja',
+                society: 'jea',
+                url: 'https://jea-endo.or.jp/materials/guidelines.html',
+                pdfUrl: 'https://jea-endo.or.jp/materials/guidelines.html'
+            },
             
-            let currentResults = [];
-            let downloadedItems = JSON.parse(localStorage.getItem('downloadedItems') || '[]');
-
-            searchForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+            // 日本保存歯科学会のガイドライン
+            {
+                id: 'jscd-guideline-2019',
+                title: 'う蝕治療ガイドライン',
+                authors: '日本保存歯科学会',
+                journal: '日本保存歯科学会',
+                date: '2019',
+                type: 'guideline',
+                field: 'conservative',
+                language: 'ja',
+                society: 'jscd',
+                url: 'https://www.hozon.or.jp/member/publication/guideline/',
+                pdfUrl: 'https://www.hozon.or.jp/member/publication/guideline/'
+            },
+            {
+                id: 'jscd-guideline-2015',
+                title: 'MI（Minimal Intervention）を理念としたエビデンス（根拠）とコンセンサス（合意）に基づくう蝕治療ガイドライン',
+                authors: '日本保存歯科学会',
+                journal: '日本保存歯科学会',
+                date: '2015',
+                type: 'guideline',
+                field: 'conservative',
+                language: 'ja',
+                society: 'jscd',
+                url: 'https://www.hozon.or.jp/member/publication/guideline/',
+                pdfUrl: 'https://www.hozon.or.jp/member/publication/guideline/'
+            },
+            
+            // 日本接着歯学会のガイドライン
+            {
+                id: 'jadr-guideline-2018',
+                title: '接着歯学臨床ガイドライン',
+                authors: '日本接着歯学会',
+                journal: '日本接着歯学会',
+                date: '2018',
+                type: 'guideline',
+                field: 'adhesive',
+                language: 'ja',
+                society: 'jadr',
+                url: 'https://www.adhesive-dent.com/guideline/',
+                pdfUrl: 'https://www.adhesive-dent.com/guideline/'
+            },
+            
+            // 日本歯周病学会のガイドライン
+            {
+                id: 'jspp-guideline-2022',
+                title: '歯周病患者における再生療法の指針',
+                authors: '日本歯周病学会',
+                journal: '日本歯周病学会',
+                date: '2022',
+                type: 'guideline',
+                field: 'periodontics',
+                language: 'ja',
+                society: 'jspp',
+                url: 'https://www.perio.jp/publication/guideline.shtml',
+                pdfUrl: 'https://www.perio.jp/publication/guideline.shtml'
+            },
+            {
+                id: 'jspp-guideline-2015',
+                title: '歯周病患者における抗菌療法の指針',
+                authors: '日本歯周病学会',
+                journal: '日本歯周病学会',
+                date: '2015',
+                type: 'guideline',
+                field: 'periodontics',
+                language: 'ja',
+                society: 'jspp',
+                url: 'https://www.perio.jp/publication/guideline.shtml',
+                pdfUrl: 'https://www.perio.jp/publication/guideline.shtml'
+            },
+            
+            // 日本矯正歯科学会のガイドライン
+            {
+                id: 'jos-guideline-2020',
+                title: '矯正歯科治療における感染症対策ガイドライン',
+                authors: '日本矯正歯科学会',
+                journal: '日本矯正歯科学会',
+                date: '2020',
+                type: 'guideline',
+                field: 'orthodontics',
+                language: 'ja',
+                society: 'jos',
+                url: 'https://www.jos.gr.jp/medical/guideline/',
+                pdfUrl: 'https://www.jos.gr.jp/medical/guideline/'
+            },
+            
+            // 日本小児歯科学会のガイドライン
+            {
+                id: 'jspd-guideline-2018',
+                title: '小児の歯冠修復治療ガイドライン',
+                authors: '日本小児歯科学会',
+                journal: '日本小児歯科学会',
+                date: '2018',
+                type: 'guideline',
+                field: 'pediatric',
+                language: 'ja',
+                society: 'jspd',
+                url: 'http://www.jspd.or.jp/contents/main/proposal/',
+                pdfUrl: 'http://www.jspd.or.jp/contents/main/proposal/'
+            },
+            
+            // 日本口腔外科学会のガイドライン
+            {
+                id: 'jsoms-guideline-2021',
+                title: '口腔外科ハンドブック',
+                authors: '日本口腔外科学会',
+                journal: '日本口腔外科学会',
+                date: '2021',
+                type: 'guideline',
+                field: 'oral-surgery',
+                language: 'ja',
+                society: 'jsoms',
+                url: 'https://www.jsoms.or.jp/medical/guideline/',
+                pdfUrl: 'https://www.jsoms.or.jp/medical/guideline/'
+            },
+            
+            // アメリカ歯科医師会のガイドライン
+            {
+                id: 'ada-guideline-2022',
+                title: 'Clinical Practice Guidelines on Antibiotic Use',
+                authors: 'American Dental Association',
+                journal: 'Journal of the American Dental Association',
+                date: '2022',
+                type: 'guideline',
+                field: 'conservative',
+                language: 'en',
+                society: 'ada',
+                url: 'https://www.ada.org/resources/research/science/evidence-based-dental-research',
+                pdfUrl: 'https://www.ada.org/resources/research/science/evidence-based-dental-research'
+            },
+            
+            // アメリカ歯内療法学会のガイドライン
+            {
+                id: 'aae-guideline-2020',
+                title: 'AAE Position Statement on the Use of Systemic Antibiotics in Endodontics',
+                authors: 'American Association of Endodontists',
+                journal: 'Journal of Endodontics',
+                date: '2020',
+                type: 'guideline',
+                field: 'endodontics',
+                language: 'en',
+                society: 'aae',
+                url: 'https://www.aae.org/specialty/clinical-resources/guidelines-position-statements/',
+                pdfUrl: 'https://www.aae.org/specialty/clinical-resources/guidelines-position-statements/'
+            },
+            
+            // 高エビデンスレベルの論文（システマティックレビュー、RCT、高インパクトファクター）
+            {
+                id: 'paper-sr-endo-2022',
+                title: '根管治療後の疼痛管理におけるNSAIDsの有効性：システマティックレビューとメタアナリシス',
+                authors: '山田太郎, 鈴木一郎, 佐藤次郎',
+                journal: '日本歯科保存学雑誌',
+                date: '2022',
+                type: 'paper',
+                field: 'endodontics',
+                language: 'ja',
+                society: 'jscd',
+                url: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/',
+                pdfUrl: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/'
+            },
+            {
+                id: 'paper-rct-perio-2021',
+                title: '慢性歯周炎患者に対するスケーリング・ルートプレーニングと抗菌薬併用療法の効果：ランダム化比較試験',
+                authors: '田中一郎, 伊藤二郎, 高橋三郎',
+                journal: '日本歯周病学会会誌',
+                date: '2021',
+                type: 'paper',
+                field: 'periodontics',
+                language: 'ja',
+                society: 'jspp',
+                url: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/',
+                pdfUrl: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/'
+            },
+            {
+                id: 'paper-sr-adhesive-2020',
+                title: 'コンポジットレジン修復におけるユニバーサルアドヒーシブの臨床成績：システマティックレビュー',
+                authors: '佐々木一郎, 高橋二郎, 鈴木三郎',
+                journal: '接着歯学',
+                date: '2020',
+                type: 'paper',
+                field: 'adhesive',
+                language: 'ja',
+                society: 'jadr',
+                url: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/',
+                pdfUrl: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/'
+            },
+            {
+                id: 'paper-rct-ortho-2021',
+                title: '矯正治療中の疼痛管理におけるレーザー療法の効果：ランダム化比較試験',
+                authors: '伊藤一郎, 佐藤二郎, 田中三郎',
+                journal: '日本矯正歯科学会雑誌',
+                date: '2021',
+                type: 'paper',
+                field: 'orthodontics',
+                language: 'ja',
+                society: 'jos',
+                url: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/',
+                pdfUrl: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/'
+            },
+            {
+                id: 'paper-sr-pediatric-2022',
+                title: '小児における予防的シーラント材の長期臨床成績：システマティックレビュー',
+                authors: '山本一郎, 鈴木二郎, 佐藤三郎',
+                journal: '小児歯科学雑誌',
+                date: '2022',
+                type: 'paper',
+                field: 'pediatric',
+                language: 'ja',
+                society: 'jspd',
+                url: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/',
+                pdfUrl: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/'
+            },
+            {
+                id: 'paper-rct-surgery-2021',
+                title: '下顎智歯抜歯後の疼痛管理におけるデキサメタゾンの効果：ランダム化比較試験',
+                authors: '高橋一郎, 伊藤二郎, 佐藤三郎',
+                journal: '日本口腔外科学会雑誌',
+                date: '2021',
+                type: 'paper',
+                field: 'oral-surgery',
+                language: 'ja',
+                society: 'jsoms',
+                url: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/',
+                pdfUrl: 'https://www.jstage.jst.go.jp/browse/jjcp/-char/ja/'
+            },
+            {
+                id: 'paper-sr-endo-en-2022',
+                title: 'Effectiveness of Calcium Silicate-Based Materials in Endodontic Treatment: A Systematic Review and Meta-analysis',
+                authors: 'Smith J, Johnson R, Williams T',
+                journal: 'Journal of Endodontics',
+                date: '2022',
+                type: 'paper',
+                field: 'endodontics',
+                language: 'en',
+                society: 'aae',
+                url: 'https://www.jendodon.com/',
+                pdfUrl: 'https://www.jendodon.com/'
+            },
+            {
+                id: 'paper-rct-perio-en-2021',
+                title: 'Clinical Efficacy of Probiotics as an Adjunct to Scaling and Root Planing in Patients with Chronic Periodontitis: A Randomized Controlled Trial',
+                authors: 'Brown A, Davis B, Wilson C',
+                journal: 'Journal of Periodontology',
+                date: '2021',
+                type: 'paper',
+                field: 'periodontics',
+                language: 'en',
+                society: 'ada',
+                url: 'https://aap.onlinelibrary.wiley.com/journal/19433670',
+                pdfUrl: 'https://aap.onlinelibrary.wiley.com/journal/19433670'
+            }
+        ];
+        
+        // 検索フォームの送信イベント
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 検索条件の取得
+            const keyword = document.getElementById('keyword').value.toLowerCase();
+            const field = document.getElementById('field').value;
+            const documentType = document.getElementById('documentType').value;
+            const language = document.getElementById('language').value;
+            const society = document.getElementById('society').value;
+            
+            // 検索条件に合致するアイテムをフィルタリング
+            const results = mockData.filter(item => {
+                // キーワード検索
+                const keywordMatch = !keyword || 
+                    item.title.toLowerCase().includes(keyword) || 
+                    item.authors.toLowerCase().includes(keyword);
                 
-                // 検索開始
-                loadingDiv.style.display = 'block';
-                resultsDiv.innerHTML = '';
-                exportBtn.disabled = true;
-                downloadAllBtn.disabled = true;
+                // 分野フィルタリング
+                const fieldMatch = field === 'all' || item.field === field;
                 
-                // キーワードと条件を取得
-                const keyword = document.getElementById('keyword').value;
-                const field = document.getElementById('field').value;
-                const documentType = document.getElementById('document_type').value;
-                const language = document.getElementById('language').value;
+                // 文献タイプフィルタリング
+                const typeMatch = documentType === 'all' || item.type === documentType;
                 
-                // PubMed APIの代わりにモックデータを使用
-                setTimeout(() => {
-                    loadingDiv.style.display = 'none';
-                    
-                    // モックデータ
-                    const mockPapers = getMockPapers(keyword, field, documentType, language);
-                    currentResults = mockPapers;
-                    
-                    if (mockPapers.length === 0) {
-                        resultsDiv.innerHTML = '<p class="text-center text-muted">検索条件に一致する論文が見つかりませんでした。</p>';
-                        return;
-                    }
-                    
-                    // 検索結果を表示
-                    let html = '';
-                    mockPapers.forEach((paper, index) => {
-                        let typeBadge = '';
-                        if (paper.type === 'guideline') {
-                            typeBadge = '<span class="badge bg-danger evidence-badge">ガイドライン</span>';
-                        } else if (paper.type === 'paper') {
-                            typeBadge = '<span class="badge bg-primary evidence-badge">論文</span>';
-                        }
-                        
-                        let languageBadge = '';
-                        if (paper.language === 'japanese') {
-                            languageBadge = '<span class="badge bg-info evidence-badge">日本語</span>';
-                        } else if (paper.language === 'english') {
-                            languageBadge = '<span class="badge bg-warning text-dark evidence-badge">英語</span>';
-                        }
-                        
-                        const isDownloaded = downloadedItems.includes(paper.id);
-                        const downloadedBadge = isDownloaded ? '<span class="downloaded-badge">ダウンロード済</span>' : '';
-                        
-                        html += `
-                            <div class="card result-card ${isDownloaded ? 'downloaded' : ''}" data-id="${paper.id}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${paper.title} ${typeBadge} ${languageBadge} ${downloadedBadge}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">${paper.authors}</h6>
-                                    <p class="card-text">
-                                        <small class="text-muted">${paper.journal}, ${paper.publication_date}</small>
-                                    </p>
-                                    <div class="d-flex">
-                                        <a href="${paper.url}" class="btn btn-sm btn-outline-primary me-2" target="_blank">詳細を表示</a>
-                                        <button class="btn btn-sm btn-outline-success download-btn" data-index="${index}" ${isDownloaded ? 'disabled' : ''}>
-                                            ${isDownloaded ? 'ダウンロード済' : 'ダウンロード'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    
-                    resultsDiv.innerHTML = html;
-                    exportBtn.disabled = false;
-                    downloadAllBtn.disabled = false;
-                    
-                    // ダウンロードボタンのイベントリスナーを追加
-                    document.querySelectorAll('.download-btn').forEach(button => {
-                        button.addEventListener('click', function() {
-                            const index = parseInt(this.getAttribute('data-index'));
-                            downloadPaper(currentResults[index]);
-                        });
-                    });
-                }, 1500);
+                // 言語フィルタリング
+                const languageMatch = language === 'all' || item.language === language;
+                
+                // 学会フィルタリング
+                const societyMatch = society === 'all' || item.society === society;
+                
+                return keywordMatch && fieldMatch && typeMatch && languageMatch && societyMatch;
             });
             
-            // 一括ダウンロードボタン
-            downloadAllBtn.addEventListener('click', function() {
-                if (currentResults.length === 0) return;
+            // 検索結果の表示
+            displayResults(results);
+        });
+        
+        // 検索結果の表示
+        function displayResults(results) {
+            const resultsContainer = document.getElementById('searchResults');
+            const bulkDownloadBtn = document.getElementById('bulkDownload');
+            
+            // 結果がない場合
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-center text-muted">検索条件に一致する結果はありませんでした。</p>';
+                bulkDownloadBtn.style.display = 'none';
+                return;
+            }
+            
+            // 一括ダウンロードボタンの表示
+            bulkDownloadBtn.style.display = 'block';
+            
+            // 結果の表示
+            let html = '';
+            results.forEach(item => {
+                const isDownloaded = isItemDownloaded(item.id);
+                const itemClass = isDownloaded ? 'result-item downloaded' : 'result-item';
+                const btnText = isDownloaded ? 'ダウンロード済' : 'ダウンロード';
+                const btnClass = isDownloaded ? 'btn-secondary' : 'btn-primary';
+                const btnDisabled = isDownloaded ? 'disabled' : '';
                 
-                // まだダウンロードされていないアイテムをフィルタリング
-                const notDownloadedItems = currentResults.filter(item => !downloadedItems.includes(item.id));
+                // 文献タイプに応じたバッジの色
+                const typeBadgeClass = item.type === 'guideline' ? 'bg-success' : 'bg-primary';
+                const typeText = item.type === 'guideline' ? 'ガイドライン' : '論文';
                 
-                if (notDownloadedItems.length === 0) {
-                    alert('すべての項目はすでにダウンロード済みです。');
+                // 言語バッジの色
+                const langBadgeClass = item.language === 'ja' ? 'bg-info' : 'bg-warning';
+                const langText = item.language === 'ja' ? '日本語' : '英語';
+                
+                html += `
+                <div class="${itemClass}" data-id="${item.id}">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5>${item.title}</h5>
+                        <span class="badge ${typeBadgeClass} badge-evidence">${typeText}</span>
+                    </div>
+                    <p class="mb-1"><strong>著者:</strong> ${item.authors}</p>
+                    <p class="mb-1"><strong>出典:</strong> ${item.journal}</p>
+                    <p class="mb-1"><strong>発行日:</strong> ${item.date}</p>
+                    <div class="d-flex align-items-center mt-2">
+                        <span class="badge ${langBadgeClass} badge-language me-2">${langText}</span>
+                        <a href="${item.url}" target="_blank" class="btn btn-outline-primary btn-sm me-2">詳細を見る</a>
+                        <button class="btn ${btnClass} btn-sm btn-download" data-id="${item.id}" data-url="${item.pdfUrl}" ${btnDisabled}>${btnText}</button>
+                    </div>
+                </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = html;
+            
+            // ダウンロードボタンのイベントリスナー
+            document.querySelectorAll('.btn-download').forEach(btn => {
+                if (!btn.disabled) {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const url = this.getAttribute('data-url');
+                        downloadItem(id, url);
+                        
+                        // ボタンとアイテムの表示を更新
+                        this.textContent = 'ダウンロード済';
+                        this.classList.replace('btn-primary', 'btn-secondary');
+                        this.disabled = true;
+                        this.closest('.result-item').classList.add('downloaded');
+                    });
+                }
+            });
+            
+            // 一括ダウンロードボタンのイベントリスナー
+            bulkDownloadBtn.addEventListener('click', function() {
+                const undownloadedItems = results.filter(item => !isItemDownloaded(item.id));
+                
+                if (undownloadedItems.length === 0) {
+                    alert('すべてのアイテムはすでにダウンロード済みです。');
                     return;
                 }
                 
-                // 確認ダイアログ
-                if (confirm(`${notDownloadedItems.length}件の項目をダウンロードします。よろしいですか？`)) {
-                    notDownloadedItems.forEach(item => {
-                        downloadPaper(item);
-                    });
-                }
-            });
-            
-            // 個別ダウンロード関数
-            function downloadPaper(paper) {
-                // PDFファイルをダウンロードする代わりに、テキストファイルを生成
-                const content = `タイトル: ${paper.title}\n著者: ${paper.authors}\nジャーナル: ${paper.journal}\n発行日: ${paper.publication_date}\nURL: ${paper.url}\n\n要約:\nこれは${paper.type === 'guideline' ? 'ガイドライン' : '論文'}のサンプルテキストです。実際のアプリケーションでは、PDFファイルがダウンロードされます。`;
-                
-                const blob = new Blob([content], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${paper.title.substring(0, 30).replace(/[^\w\s]/gi, '')}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                // ダウンロード済みとしてマーク
-                if (!downloadedItems.includes(paper.id)) {
-                    downloadedItems.push(paper.id);
-                    localStorage.setItem('downloadedItems', JSON.stringify(downloadedItems));
+                // 未ダウンロードのアイテムをダウンロード
+                undownloadedItems.forEach(item => {
+                    downloadItem(item.id, item.pdfUrl);
                     
-                    // UIを更新
-                    const paperElement = document.querySelector(`.result-card[data-id="${paper.id}"]`);
-                    if (paperElement) {
-                        paperElement.classList.add('downloaded');
-                        const title = paperElement.querySelector('.card-title');
-                        if (!title.innerHTML.includes('ダウンロード済')) {
-                            title.innerHTML += ' <span class="downloaded-badge">ダウンロード済</span>';
-                        }
-                        const downloadBtn = paperElement.querySelector('.download-btn');
-                        if (downloadBtn) {
-                            downloadBtn.disabled = true;
-                            downloadBtn.textContent = 'ダウンロード済';
-                        }
+                    // 対応するボタンとアイテムの表示を更新
+                    const btn = document.querySelector(`.btn-download[data-id="${item.id}"]`);
+                    if (btn) {
+                        btn.textContent = 'ダウンロード済';
+                        btn.classList.replace('btn-primary', 'btn-secondary');
+                        btn.disabled = true;
+                        btn.closest('.result-item').classList.add('downloaded');
                     }
-                }
-            }
-            
-            // CSVエクスポート
-            exportBtn.addEventListener('click', function() {
-                if (currentResults.length === 0) return;
-                
-                // CSVデータの作成
-                let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "ID,Title,Authors,Journal,Publication Date,Type,Language,URL,Downloaded\r\n";
-                
-                currentResults.forEach(paper => {
-                    const isDownloaded = downloadedItems.includes(paper.id);
-                    const row = [
-                        paper.id,
-                        `"${paper.title}"`,
-                        `"${paper.authors}"`,
-                        `"${paper.journal}"`,
-                        paper.publication_date,
-                        paper.type === 'guideline' ? 'ガイドライン' : '論文',
-                        paper.language === 'japanese' ? '日本語' : '英語',
-                        paper.url,
-                        isDownloaded ? 'はい' : 'いいえ'
-                    ].join(",");
-                    csvContent += row + "\r\n";
                 });
                 
-                // CSVファイルのダウンロード
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", "dental_papers.csv");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                alert(`${undownloadedItems.length}件のアイテムをダウンロードしました。`);
             });
+        }
+        
+        // アイテムのダウンロード
+        function downloadItem(id, url) {
+            // 実際のダウンロード処理
+            // 注: 実際のAPIでは、PDFファイルをダウンロードするためのコードに置き換えます
+            console.log(`Downloading item ${id} from ${url}`);
             
-            // モックデータを生成する関数
-            function getMockPapers(keyword, field, documentType, language) {
-                if (!keyword && !field && !documentType && !language) return [];
-                
-                const mockData = [
-                    {
-                        id: "jp_guideline_1",
-                        title: "歯周病の診断と治療ガイドライン",
-                        authors: "日本歯周病学会ガイドライン委員会",
-                        journal: "日本歯周病学会誌",
-                        publication_date: "2024-01-15",
-                        type: "guideline",
-                        language: "japanese",
-                        url: "https://www.perio.jp/publication/guideline.shtml"
-                    },
-                    {
-                        id: "jp_paper_1",
-                        title: "歯周病治療における抗菌薬の効果: システマティックレビュー",
-                        authors: "田中一郎, 鈴木次郎, 佐藤三郎",
-                        journal: "Journal of Periodontal Research",
-                        publication_date: "2023-11-05",
-                        type: "paper",
-                        language: "japanese",
-                        url: "https://pubmed.ncbi.nlm.nih.gov/example1"
-                    },
-                    {
-                        id: "jp_paper_2",
-                        title: "接着修復における新規材料の臨床評価: ランダム化比較試験",
-                        authors: "山田太郎, 伊藤花子, 高橋健太",
-                        journal: "Journal of Adhesive Dentistry",
-                        publication_date: "2023-08-22",
-                        type: "paper",
-                        language: "japanese",
-                        url: "https://pubmed.ncbi.nlm.nih.gov/example2"
-                    },
-                    {
-                        id: "jp_guideline_2",
-                        title: "小児の齲蝕予防ガイドライン",
-                        authors: "日本小児歯科学会",
-                        journal: "小児歯科学会誌",
-                        publication_date: "2023-06-10",
-                        type: "guideline",
-                        language: "japanese",
-                        url: "http://www.jspd.or.jp/contents/main/proposal/index.html"
-                    },
-                    {
-                        id: "en_paper_1",
-                        title: "Long-term Survival Rate of Teeth after Endodontic Treatment",
-                        authors: "Johnson R, Smith J, Williams T",
-                        journal: "Journal of Endodontics",
-                        publication_date: "2023-04-18",
-                        type: "paper",
-                        language: "english",
-                        url: "https://pubmed.ncbi.nlm.nih.gov/example4"
-                    },
-                    {
-                        id: "en_guideline_1",
-                        title: "Clinical Practice Guidelines for Orthodontic Treatment",
-                        authors: "American Association of Orthodontists",
-                        journal: "American Journal of Orthodontics and Dentofacial Orthopedics",
-                        publication_date: "2023-02-27",
-                        type: "guideline",
-                        language: "english",
-                        url: "https://www.aaoinfo.org/practice-management/clinical-practice-guidelines/"
-                    },
-                    {
-                        id: "en_paper_2",
-                        title: "Effectiveness of Minimally Invasive Approaches in Conservative Dentistry: A Systematic Review",
-                        authors: "Brown A, Davis C, Miller E",
-                        journal: "Journal of Conservative Dentistry",
-                        publication_date: "2022-12-05",
-                        type: "paper",
-                        language: "english",
-                        url: "https://pubmed.ncbi.nlm.nih.gov/example7"
-                    },
-                    {
-                        id: "jp_paper_3",
-                        title: "歯内療法後の予後に関する長期的研究",
-                        authors: "加藤裕子, 松本龍太郎, 井上智子",
-                        journal: "日本歯内療法学会雑誌",
-                        publication_date: "2022-10-15",
-                        type: "paper",
-                        language: "japanese",
-                        url: "https://pubmed.ncbi.nlm.nih.gov/example8"
-                    },
-                    {
-                        id: "en_guideline_2",
-                        title: "Evidence-Based Clinical Practice Guideline on Antibiotic Use for the Urgent Management of Pulpal- and Periapical-Related Dental Pain and Intraoral Swelling",
-                        authors: "American Dental Association",
-                        journal: "Journal of the American Dental Association",
-                        publication_date: "2022-08-01",
-                        type: "guideline",
-                        language: "english",
-                        url: "https://www.ada.org/resources/research/science/evidence-based-dental-research"
-                    },
-                    {
-                        id: "en_paper_3",
-                        title: "Comparison of Different Pain Management Protocols After Oral Surgery",
-                        authors: "Thompson L, Garcia J, Wilson K",
-                        journal: "Journal of Oral and Maxillofacial Surgery",
-                        publication_date: "2022-05-12",
-                        type: "paper",
-                        language: "english",
-                        url: "https://pubmed.ncbi.nlm.nih.gov/example9"
-                    }
-                ];
-                
-                // キーワード、分野、文献タイプ、言語でフィルタリング
-                return mockData.filter(paper => {
-                    const keywordMatch = !keyword || paper.title.toLowerCase().includes(keyword.toLowerCase());
-                    const fieldMatch = !field || paper.title.toLowerCase().includes(field.toLowerCase());
-                    const typeMatch = !documentType || paper.type === documentType;
-                    const languageMatch = !language || paper.language === language;
-                    return keywordMatch && fieldMatch && typeMatch && languageMatch;
-                });
-            }
+            // ダウンロード済みとしてマーク
+            saveDownloadedItem(id);
+            
+            // PDFファイルのダウンロードをシミュレート
+            // 実際のアプリケーションでは、window.open(url)やfetch APIを使用してダウンロードします
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.download = `dental-guideline-${id}.pdf`;
+            a.click();
+        }
+        
+        // 初期表示時に検索フォームをリセット
+        window.addEventListener('load', function() {
+            document.getElementById('searchForm').reset();
         });
     </script>
 </body>
