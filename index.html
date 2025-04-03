@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>歯科系ガイドライン・論文検索</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+        .result-card {
+            margin-bottom: 15px;
+            border-left: 4px solid #0d6efd;
+        }
+        .evidence-badge {
+            font-size: 0.8rem;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 1px solid #e5e5e5;
+            color: #777;
+        }
+        @media (max-width: 768px) {
+            .btn-responsive {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="mb-4">
+            <h1 class="text-center">歯科系ガイドライン・論文検索</h1>
+            <p class="text-center text-muted">日本とアメリカの主要な歯科系学会のガイドラインとエビデンスレベルの高い論文を検索</p>
+        </header>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>検索条件</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="searchForm">
+                            <div class="mb-3">
+                                <label for="keyword" class="form-label">キーワード</label>
+                                <input type="text" class="form-control" id="keyword" name="keyword" placeholder="例: 歯周病 治療">
+                            </div>
+                            <div class="mb-3">
+                                <label for="field" class="form-label">分野</label>
+                                <select class="form-select" id="field" name="field">
+                                    <option value="">すべての分野</option>
+                                    <option value="接着修復">接着修復</option>
+                                    <option value="保存歯科">保存歯科</option>
+                                    <option value="歯内療法">歯内療法</option>
+                                    <option value="歯周病">歯周病</option>
+                                    <option value="矯正">矯正</option>
+                                    <option value="小児歯科">小児歯科</option>
+                                    <option value="口腔外科">口腔外科</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="evidence_level" class="form-label">エビデンスレベル</label>
+                                <select class="form-select" id="evidence_level" name="evidence_level">
+                                    <option value="">すべてのレベル</option>
+                                    <option value="Systematic Review/Meta-Analysis">システマティックレビュー/メタ分析</option>
+                                    <option value="Randomized Controlled Trial">ランダム化比較試験</option>
+                                    <option value="High Impact Factor">高インパクトファクター</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">検索</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>日本の主要歯科学会</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="https://www.jads.jp/" target="_blank">日本歯科医学会</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://www.hozon.or.jp/" target="_blank">日本歯科保存学会</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.hotetsu.com/" target="_blank">日本補綴歯科学会</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://www.jsoms.or.jp/" target="_blank">日本口腔外科学会</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.jos.gr.jp/" target="_blank">日本矯正歯科学会</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://www.jspd.or.jp/" target="_blank">日本小児歯科学会</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.perio.jp/" target="_blank">日本歯周病学会</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>アメリカの主要歯科学会</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="https://www.ada.org/" target="_blank">American Dental Association (ADA)</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.aae.org/" target="_blank">American Association of Endodontists</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.perio.org/" target="_blank">American Academy of Periodontology</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.aaoinfo.org/" target="_blank">American Association of Orthodontists</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.aapd.org/" target="_blank">American Academy of Pediatric Dentistry</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://www.aaoms.org/" target="_blank">American Association of Oral and Maxillofacial Surgeons</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">検索結果</h5>
+                        <button id="exportBtn" class="btn btn-sm btn-success" disabled>CSVエクスポート</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="loading" class="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">論文を検索中...</p>
+                        </div>
+                        <div id="results">
+                            <p class="text-center text-muted">検索条件を入力して「検索」ボタンをクリックしてください。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer text-center">
+            <p>&copy; 2025 歯科系ガイドライン・論文検索アプリ</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.getElementById('searchForm');
+            const resultsDiv = document.getElementById('results');
+            const loadingDiv = document.getElementById('loading');
+            const exportBtn = document.getElementById('exportBtn');
+            
+            let currentResults = [];
+
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 検索開始
+                loadingDiv.style.display = 'block';
+                resultsDiv.innerHTML = '';
+                exportBtn.disabled = true;
+                
+                // キーワードと条件を取得
+                const keyword = document.getElementById('keyword').value;
+                const field = document.getElementById('field').value;
+                const evidenceLevel = document.getElementById('evidence_level').value;
+                
+                // PubMed APIの代わりにモックデータを使用
+                setTimeout(() => {
+                    loadingDiv.style.display = 'none';
+                    
+                    // モックデータ
+                    const mockPapers = getMockPapers(keyword, field, evidenceLevel);
+                    currentResults = mockPapers;
+                    
+                    if (mockPapers.length === 0) {
+                        resultsDiv.innerHTML = '<p class="text-center text-muted">検索条件に一致する論文が見つかりませんでした。</p>';
+                        return;
+                    }
+                    
+                    // 検索結果を表示
+                    let html = '';
+                    mockPapers.forEach(paper => {
+                        let evidenceBadge = '';
+                        if (paper.evidence_level === 'Systematic Review/Meta-Analysis') {
+                            evidenceBadge = '<span class="badge bg-danger evidence-badge">システマティックレビュー/メタ分析</span>';
+                        } else if (paper.evidence_level === 'Randomized Controlled Trial') {
+                            evidenceBadge = '<span class="badge bg-warning text-dark evidence-badge">ランダム化比較試験</span>';
+                        } else if (paper.evidence_level === 'High Impact Factor') {
+                            evidenceBadge = '<span class="badge bg-info text-dark evidence-badge">高インパクトファクター</span>';
+                        }
+                        
+                        html += `
+                            <div class="card result-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">${paper.title} ${evidenceBadge}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">${paper.authors}</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">${paper.journal}, ${paper.publication_date}</small>
+                                    </p>
+                                    <a href="${paper.url}" class="btn btn-sm btn-outline-primary" target="_blank">PubMedで表示</a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    resultsDiv.innerHTML = html;
+                    exportBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // CSVエクスポート
+            exportBtn.addEventListener('click', function() {
+                if (currentResults.length === 0) return;
+                
+                // CSVデータの作成
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "Title,Authors,Journal,Publication Date,Evidence Level,URL\r\n";
+                
+                currentResults.forEach(paper => {
+                    const row = [
+                        `"${paper.title}"`,
+                        `"${paper.authors}"`,
+                        `"${paper.journal}"`,
+                        paper.publication_date,
+                        paper.evidence_level,
+                        paper.url
+                    ].join(",");
+                    csvContent += row + "\r\n";
+                });
+                
+                // CSVファイルのダウンロード
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "dental_papers.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            // モックデータを生成する関数
+            function getMockPapers(keyword, field, evidenceLevel) {
+                if (!keyword && !field) return [];
+                
+                const mockData = [
+                    {
+                        title: "歯周病治療における抗菌薬の効果: システマティックレビュー",
+                        authors: "田中一郎, 鈴木次郎, 佐藤三郎",
+                        journal: "Journal of Periodontal Research",
+                        publication_date: "2024-01-15",
+                        evidence_level: "Systematic Review/Meta-Analysis",
+                        url: "https://pubmed.ncbi.nlm.nih.gov/example1"
+                    },
+                    {
+                        title: "接着修復における新規材料の臨床評価: ランダム化比較試験",
+                        authors: "山田太郎, 伊藤花子, 高橋健太",
+                        journal: "Journal of Adhesive Dentistry",
+                        publication_date: "2023-11-05",
+                        evidence_level: "Randomized Controlled Trial",
+                        url: "https://pubmed.ncbi.nlm.nih.gov/example2"
+                    },
+                    {
+                        title: "小児の齲蝕予防におけるフッ化物バーニッシュの効果",
+                        authors: "中村洋子, 小林誠, 渡辺真理",
+                        journal: "Journal of Dental Research",
+                        publication_date: "2023-08-22",
+                        evidence_level: "High Impact Factor",
+                        url: "https://pubmed.ncbi.nlm.nih.gov/example3"
+                    },
+                    {
+                        title: "歯内療法後の歯の生存率に関する長期的研究",
+                        authors: "加藤裕子, 松本龍太郎, 井上智子",
+                        journal: "Journal of Endodontics",
+                        publication_date: "2023-06-10",
+                        evidence_level: "High Impact Factor",
+                        url: "https://pubmed.ncbi.nlm.nih.gov/example4"
+                    },
+                    {
+                        title: "矯正治療における加速矯正法の効果: メタアナリシス",
+                        authors: "木村健太, 斎藤美香, 岡田隆",
+                        journal: "American Journal of Orthodontics and Dentofacial Orthopedics",
+                        publication_date: "2023-04-18",
+                        evidence_level: "Systematic Review/Meta-Analysis",
+                        url: "https://pubmed.ncbi.nlm.nih.gov/example5"
+                    },
+                    {
+                        title: "口腔外科手術後の疼痛管理プロトコルの比較",
+                        authors: "藤田雄大, 村田千尋, 西山和子",
+                        journal: "Journal of Oral and Maxillofacial Surgery",
+                        publication_date: "2023-02-27",
+                        evidence_level: "Randomized Controlled Trial",
+                        url: "https://pubmed.ncbi.nlm.nih.gov/example6"
+                    },
+                    {
+                        title: "保存歯科治療における最小侵襲アプローチの長期予後",
+                        authors: "吉田真, 大山博, 石川裕子",
+                        journal: "Journal of Conservative Dentistry",
+                        publication_date: "2022-12-05",
+                        evidence_level: "High Impact Factor",
+                        url: "https://pubmed.ncbi.nlm.nih.gov/example7"
+                    }
+                ];
+                
+                // キーワード、分野、エビデンスレベルでフィルタリング
+                return mockData.filter(paper => {
+                    const keywordMatch = !keyword || paper.title.toLowerCase().includes(keyword.toLowerCase());
+                    const fieldMatch = !field || paper.title.toLowerCase().includes(field.toLowerCase());
+                    const evidenceLevelMatch = !evidenceLevel || paper.evidence_level === evidenceLevel;
+                    return keywordMatch && fieldMatch && evidenceLevelMatch;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
